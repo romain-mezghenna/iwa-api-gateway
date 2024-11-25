@@ -42,13 +42,18 @@ public class GatewayConfig {
                         .uri("lb://user-service") 
                 )
                 .route("notification-route", r -> r
-                        .path("/api/v1/notification/**") // Path of the request to match
-                        .filters(f -> f.stripPrefix(3)) // Remove the first part of the path
-                        .uri("lb://notification-service") // Destination URI of the service
-                ).route("message-route", r -> r
-                        .path("/api/v1/reservation/**") // Path of the request to match
-                        .filters(f -> f.stripPrefix(3)) // Remove the first part of the path
-                        .uri("lb://SERVICE-RESERVATIONS") // Destination URI of the service
+                        .path("/api/v1/notifications/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                    LOGGER.info("Routing to user-service: {}",exchange.getRequest().getPath());
+                                    return chain.filter(exchange);
+                                }))
+                        .uri("lb://notification-service")
+                )
+                .route("admin-deletion-route", r -> r
+                        .path("/api/v1/admin/deletion-requests**")
+                        .filters(f -> f.stripPrefix(2))
+                        .uri("lb://notification-service")
                 ).build();
     }
 }

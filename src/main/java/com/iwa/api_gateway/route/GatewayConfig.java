@@ -77,6 +77,15 @@ public class GatewayConfig {
                                 }))
                         .uri("lb://reservation-service")
                 )
+                .route("messaging-route", r -> r
+                        .path("/api/v1/messaging/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                    LOGGER.info("Routing to messaging-service: {}",exchange.getRequest().getPath());
+                                    return chain.filter(exchange);
+                                }))
+                        .uri("lb://messaging-service")
+                )
                 .route("admin-deletion-route", r -> r
                         .path("/api/v1/admin/deletion-requests**")
                         .filters(f -> f.stripPrefix(2))

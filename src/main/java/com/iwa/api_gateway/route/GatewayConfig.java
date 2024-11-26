@@ -45,10 +45,37 @@ public class GatewayConfig {
                         .path("/api/v1/notifications/**")
                         .filters(f -> f.stripPrefix(2)
                                 .filter((exchange, chain) -> {
-                                    LOGGER.info("Routing to user-service: {}",exchange.getRequest().getPath());
+                                    LOGGER.info("Routing to notification-service: {}",exchange.getRequest().getPath());
                                     return chain.filter(exchange);
                                 }))
                         .uri("lb://notification-service")
+                )
+                .route("article-route", r -> r
+                        .path("/api/v1/articles/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                    LOGGER.info("Routing to article-service: {}",exchange.getRequest().getPath());
+                                    return chain.filter(exchange);
+                                }))
+                        .uri("lb://article-service")
+                )
+                .route("emplacement-route", r -> r
+                        .path("/api/v1/emplacements/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                    LOGGER.info("Routing to emplacement-service: {}",exchange.getRequest().getPath());
+                                    return chain.filter(exchange);
+                                }))
+                        .uri("lb://emplacement-service")
+                )
+                .route("reservation-route", r -> r
+                        .path("/api/v1/reservations/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                    LOGGER.info("Routing to reservation-service: {}",exchange.getRequest().getPath());
+                                    return chain.filter(exchange);
+                                }))
+                        .uri("lb://reservation-service")
                 )
                 .route("admin-deletion-route", r -> r
                         .path("/api/v1/admin/deletion-requests**")

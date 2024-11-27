@@ -86,6 +86,15 @@ public class GatewayConfig {
                                 }))
                         .uri("lb://messaging-service")
                 )
+                .route("image-route", r -> r
+                        .path("/api/v1/images/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                        LOGGER.info("Routing to image-service: {}",exchange.getRequest().getPath());
+                                        return chain.filter(exchange);
+                                }))
+                        .uri("lb://image-service")
+                )
                 .route("admin-deletion-route", r -> r
                         .path("/api/v1/admin/deletion-requests**")
                         .filters(f -> f.stripPrefix(2))

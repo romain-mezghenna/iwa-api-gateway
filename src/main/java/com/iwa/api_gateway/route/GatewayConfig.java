@@ -68,6 +68,24 @@ public class GatewayConfig {
                                 }))
                         .uri("lb://emplacement-service")
                 )
+                .route("avis-route", r -> r
+                        .path("/api/v1/avis/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                    LOGGER.info("Routing to emplacement-service: {}",exchange.getRequest().getPath());
+                                    return chain.filter(exchange);
+                                }))
+                        .uri("lb://emplacement-service")
+                )
+                .route("favoris-route", r -> r
+                        .path("/api/v1/favoris/**")
+                        .filters(f -> f.stripPrefix(2)
+                                .filter((exchange, chain) -> {
+                                    LOGGER.info("Routing to emplacement-service: {}",exchange.getRequest().getPath());
+                                    return chain.filter(exchange);
+                                }))
+                        .uri("lb://emplacement-service")
+                )
                 .route("reservation-route", r -> r
                         .path("/api/v1/reservations/**")
                         .filters(f -> f.stripPrefix(2)
